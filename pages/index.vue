@@ -49,8 +49,35 @@
     </div>
 
     <div class="section section3">
-      <div class="inner-section inner1"></div>
-      <div class="inner-section inner2"></div>
+      <div class="inner-section inner1">
+        <div class="left-content">
+          <h2>Store Shop</h2>
+          <p>
+            ร้านค้าออนไลน์ที่จำหน่ายสินค้าที่เกี่ยวข้องกับบัญชีแอปสตรีมมิ่งบัญชีอีเมล
+            และอื่นๆ
+          </p>
+        </div>
+        <div class="right-content">
+          <div class="topic">
+            <h3>ศูนย์ช่วยเหลือ</h3>
+            <p @click="navigateTo('terms')">ข้อกำหนดและเงื่อนไขการใช้งาน</p>
+            <p @click="navigateTo('privacy')">นโยบายความเป็นส่วนตัว</p>
+          </div>
+          <div class="topic">
+            <h3>เกี่ยวกับ Store Shop</h3>
+            <p @click="navigateTo('about')">เกี่ยวกับเรา</p>
+          </div>
+          <div class="topic">
+            <h3>ติดต่อเรา</h3>
+            <p @click="navigateTo('facebook')">Facebook</p>
+            <p @click="navigateTo('email')">Email</p>
+            <p @click="navigateTo('line')">Line</p>
+          </div>
+        </div>
+      </div>
+      <div class="inner-section inner2">
+        <p class="made-with-metis">Made With Metis</p>
+      </div>
     </div>
   </div>
 </template>
@@ -95,6 +122,31 @@ onMounted(() => {
 onUnmounted(() => {
   clearInterval(interval);
 });
+
+const navigateTo = (page) => {
+  switch (page) {
+    case "terms":
+      window.location.href = "/terms";
+      break;
+    case "privacy":
+      window.location.href = "/privacy";
+      break;
+    case "about":
+      window.location.href = "/about";
+      break;
+    case "facebook":
+      window.location.href = "https://facebook.com";
+      break;
+    case "email":
+      window.location.href = "metis0987568205@gmail.com";
+      break;
+    case "line":
+      window.location.href = "https://line.me";
+      break;
+    default:
+      window.location.href = "/shops";
+  }
+};
 </script>
 
 <style scoped>
@@ -239,7 +291,7 @@ body {
 .bottom-section {
   background-color: #ffffff;
   width: 100vw;
-  height: auto; /* เปลี่ยนจาก height เป็น auto เพื่อให้ความสูงตามเนื้อหา */
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -310,8 +362,8 @@ body {
   display: flex;
   flex-direction: column;
   width: 100vw;
-  height: 100vh; /* ปรับเป็น 100vh เพื่อให้ความสูงเต็มจอ */
-  overflow: hidden; /* ป้องกันการแสดงเนื้อหาส่วนเกิน */
+  height: 100vh;
+  overflow: hidden;
 }
 
 .inner-section {
@@ -321,10 +373,66 @@ body {
 .inner1 {
   height: 30%;
   background-color: #dbeafe;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 170px;
 }
 
+.left-content {
+  max-width: 40%;
+  align-self: flex-start;
+  margin-top: 50px;
+}
+
+.left-content h2 {
+  font-size: 32px;
+  color: #64a7fa;
+}
+
+.left-content p {
+  font-size: 15.5px;
+  color: #7f8c9f;
+}
+
+.right-content {
+  display: flex;
+  gap: 40px;
+  text-align: left;
+}
+
+.topic {
+  text-align: left;
+}
+
+.topic h3 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.topic p {
+  font-size: 16px;
+  color: #7f8c9f;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  margin: 5px 0;
+}
+
+.topic p:hover {
+  color: #64a7fa;
+}
 .inner2 {
   height: 15%;
   background-color: #64a7fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.made-with-metis {
+  font-size: 20px;
+  color: white;
+  font-weight: bold;
 }
 </style>
