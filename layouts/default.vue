@@ -17,16 +17,14 @@
 
         <!-- ปุ่ม -->
         <div class="buttons">
-          <button class="btn-primary">เข้าสู่ระบบ</button>
-          <button class="btn-secondary">สมัครสมาชิก</button>
+          <NuxtLink to="/login" class="btn-primary">เข้าสู่ระบบ</NuxtLink>
+          <NuxtLink to="/register" class="btn-secondary">สมัครสมาชิก</NuxtLink>
         </div>
       </div>
     </header>
     <NuxtPage />
   </div>
 </template>
-
-<script setup></script>
 
 <style scoped>
 /* กำหนด Header */
@@ -77,10 +75,9 @@ header {
   gap: 10px;
 }
 
-.btn-primary {
-  background-color: #64a7fa;
-  color: white;
-  border: none;
+.buttons a {
+  text-decoration: none;
+  display: inline-block;
   padding: 6px 10px;
   border-radius: 10px;
   font-weight: bold;
@@ -88,22 +85,21 @@ header {
   cursor: pointer;
 }
 
-.btn-secondary {
+.buttons a.btn-primary {
+  background-color: #64a7fa;
+  color: white;
+}
+
+.buttons a.btn-primary:hover {
+  background-color: #64a7fa;
+}
+
+.buttons a.btn-secondary {
   background-color: #c4c4c4;
   color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 10px;
-  font-weight: bold;
-  font-size: 15px;
-  cursor: pointer;
 }
 
-.btn-primary:hover {
-  background-color: #64a7fa;
-}
-
-.btn-secondary:hover {
+.buttons a.btn-secondary:hover {
   background-color: #cbd5e1;
 }
 </style>
