@@ -165,7 +165,7 @@ body {
 
 .container {
   min-height: 100vh;
-  width: 100vw;
+  width: 100%;
   margin: 0 auto;
   overflow-x: hidden;
 }
@@ -258,7 +258,7 @@ body {
 .bottom-section {
   background-color: #ffffffff;
   width: 100vw;
-  height: 475px;
+  height: 900px;
 }
 
 .section-title {
@@ -291,7 +291,7 @@ body {
 .bottom-section {
   background-color: #ffffff;
   width: 100vw;
-  height: auto;
+  height: 25vw;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -362,8 +362,9 @@ body {
   display: flex;
   flex-direction: column;
   width: 100vw;
-  height: 100vh;
   overflow: hidden;
+  height: 250px;
+  padding-bottom: 0;
 }
 
 .inner-section {
@@ -371,7 +372,7 @@ body {
 }
 
 .inner1 {
-  height: 30%;
+  height: 70%;
   background-color: #dbeafe;
   display: flex;
   justify-content: space-between;
@@ -382,7 +383,7 @@ body {
 .left-content {
   max-width: 40%;
   align-self: flex-start;
-  margin-top: 50px;
+  margin-top: 30px;
 }
 
 .left-content h2 {
@@ -423,7 +424,7 @@ body {
   color: #64a7fa;
 }
 .inner2 {
-  height: 15%;
+  height: 30%;
   background-color: #64a7fa;
   display: flex;
   justify-content: center;
