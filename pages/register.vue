@@ -68,7 +68,7 @@
           สมัครสมาชิก
         </button>
         <p class="text-sm text-gray-600 text-center">
-          หากยังไม่มีบัญชีคลิกที่นี่เพื่อ
+          หากมีบัญชีคลิกที่นี่เพื่อ
           <NuxtLink to="/login" class="text-blue-600 hover:text-blue-500"
             >เข้าสู่ระบบ</NuxtLink
           >
