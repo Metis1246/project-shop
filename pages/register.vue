@@ -74,17 +74,6 @@
           >
         </p>
       </form>
-      <div class="mt-6">
-        <p class="text-center text-sm font-medium text-gray-500">หรือ</p>
-        <div class="mt-4 flex justify-center gap-4">
-          <a href="https://google.com" target="_blank">
-            <img src="/images/google.jpg" alt="Google" class="w-10 h-10" />
-          </a>
-          <a href="https://line.me" target="_blank">
-            <img src="/images/line.jpg" alt="Line" class="w-10 h-10" />
-          </a>
-        </div>
-      </div>
     </div>
   </div>
 </template>
