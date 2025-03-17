@@ -8,14 +8,14 @@
       </h1>
       <form @submit.prevent="handleSubmit" class="space-y-6">
         <div>
-          <label for="username" class="block text-sm font-medium text-gray-700"
-            >ชื่อผู้ใช้</label
+          <label for="email" class="block text-sm font-medium text-gray-700"
+            >อีเมล</label
           >
           <input
-            type="text"
-            id="username"
-            v-model="form.username"
-            placeholder="กรุณากรอกชื่อผู้ใช้"
+            type="email"
+            id="email"
+            v-model="form.email"
+            placeholder="กรุณากรอกอีเมล"
             required
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
@@ -39,25 +39,17 @@
         >
           เข้าสู่ระบบ
         </button>
+
+        <p v-if="errorMessage" class="text-red-500 text-sm text-center mt-2">
+          {{ errorMessage }}
+        </p>
+
         <p class="text-sm text-gray-600 text-center">
           หากยังไม่มีบัญชีคลิกที่นี่เพื่อ
           <NuxtLink to="/register" class="text-blue-600 hover:text-blue-500"
             >สมัครสมาชิก</NuxtLink
           >
         </p>
-        <div class="flex items-center justify-center my-4">
-          <img
-            src="/images/LINE.jpg"
-            alt="Line Logo"
-            class="h-10 w-10 cursor-pointer rounded-lg"
-          />
-          <span class="mx-4 text-sm text-gray-500">หรือ</span>
-          <img
-            src="/images/google.jpg"
-            alt="Google Logo"
-            class="h-10 w-10 cursor-pointer"
-          />
-        </div>
       </form>
     </div>
   </div>
@@ -67,12 +59,33 @@
 import { ref } from "vue";
 
 const form = ref({
-  username: "",
+  email: "",
   password: "",
 });
 
-const handleSubmit = () => {
-  // จัดการการส่งฟอร์มที่นี่
-  console.log("Form submitted:", form.value);
+const errorMessage = ref("");
+
+const handleSubmit = async () => {
+  try {
+    const response = await fetch("http://localhost:5000/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form.value),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "เกิดข้อผิดพลาด");
+    }
+
+    alert("เข้าสู่ระบบสำเร็จ! 🎉");
+    console.log("Login Success:", data);
+
+    // สามารถเก็บ Token ไว้ใน localStorage ได้ถ้าต้องการ
+    // localStorage.setItem("token", data.token);
+  } catch (error) {
+    errorMessage.value = error.message;
+  }
 };
 </script>

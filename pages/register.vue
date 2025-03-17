@@ -88,8 +88,26 @@ const form = ref({
   confirmPassword: "",
 });
 
-const handleSubmit = () => {
-  // จัดการการส่งฟอร์มที่นี่
-  console.log("Form submitted:", form.value);
+const handleSubmit = async () => {
+  console.log("Sending data:", form.value); // Log ข้อมูลที่ส่ง
+
+  try {
+    const response = await fetch("http://localhost:5000/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form.value),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      alert(data.message); // แจ้งเตือนสมัครสมาชิกสำเร็จ
+    } else {
+      alert(data.message); // แจ้งเตือนข้อผิดพลาด
+    }
+  } catch (error) {
+    console.error("เกิดข้อผิดพลาดในการสมัครสมาชิก:", error);
+  }
 };
 </script>
