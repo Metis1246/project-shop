@@ -5,7 +5,7 @@
       <div class="header-container">
         <!-- ชื่อเว็บ -->
         <div class="logo">
-          <h1>Store Shop</h1>
+          <h1>Swift Shop</h1>
         </div>
 
         <!-- เมนู -->
