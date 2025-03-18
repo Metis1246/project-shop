@@ -12,7 +12,7 @@
         <div class="nav-links">
           <NuxtLink to="/">หน้าแรก</NuxtLink>
           <NuxtLink to="/shops">สินค้า</NuxtLink>
-          <NuxtLink to="/shops">เติมเงิน</NuxtLink>
+          <NuxtLink to="/wallet">เติมเงิน</NuxtLink>
         </div>
 
         <!-- ปุ่ม -->

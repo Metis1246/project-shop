@@ -27,12 +27,12 @@
           >
             ช็อปเลย
           </NuxtLink>
-          <NuxtLink
-            to="/promotions"
-            class="bg-[#7f8c9f] text-white px-4 py-2 rounded-lg font-bold"
+          <button
+            @click="scrollToPromotions"
+            class="bg-[#7f8c9f] text-white px-4 py-2 rounded-lg font-bold cursor-pointer"
           >
             ดูโปรโมชั่น
-          </NuxtLink>
+          </button>
         </div>
       </div>
       <div class="w-1/2 flex justify-center">
@@ -45,7 +45,7 @@
     </div>
 
     <!-- Section 2 -->
-    <div class="w-full">
+    <div class="w-full" ref="promotionsSection">
       <div class="bg-[#64a7fa] w-full py-5">
         <p class="text-2xl font-bold text-white ml-48">ข่าวสารและโปรโมชั่น</p>
         <div class="flex gap-5 justify-center mt-5">
@@ -81,7 +81,7 @@
               เราเป็นร้านค้าออนไลน์ที่จำหน่ายบัญชีแอปสตรีมมิ่ง บัญชีอีเมล และ
               สินค้าอื่นๆ อีกมากมาย มั่นใจได้ในความสะดวก ปลอดภัยและรวดเร็ว
               ด้วยระบบอัตโนมัติราคาประหยัด คุ้มค่าพร้อมโปรโมชั่นสุดพิเศษตลอด
-              มีสินค้าหลากหลายให้เลือกซื้อ ระบบเติมเงินใช้งานง่าย ตลอด 24
+              มีสินค้าหลากหลายให้เลือกซื้อ ระบบชำระเงินใช้งานง่าย ตลอด 24
               ชั่วโมง
             </p>
           </div>
@@ -165,6 +165,13 @@ const texts = ["สตรีมมิ่ง", "เกมส์"];
 const colors = ["#a412d9", "#DB242D"];
 const animatedText = ref(texts[0]);
 const textColor = ref(colors[0]);
+const promotionsSection = ref(null);
+
+const scrollToPromotions = () => {
+  if (promotionsSection.value) {
+    promotionsSection.value.scrollIntoView({ behavior: "smooth" });
+  }
+};
 
 let index = 0;
 let interval = null;

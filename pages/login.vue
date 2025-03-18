@@ -57,15 +57,19 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const form = ref({
   email: "",
   password: "",
 });
-
 const errorMessage = ref("");
+const showPassword = ref(false);
 
 const handleSubmit = async () => {
+  errorMessage.value = "";
+
   try {
     const response = await fetch("http://localhost:5000/login", {
       method: "POST",
@@ -79,11 +83,16 @@ const handleSubmit = async () => {
       throw new Error(data.message || "เกิดข้อผิดพลาด");
     }
 
-    alert("เข้าสู่ระบบสำเร็จ! 🎉");
+    alert("🎉 เข้าสู่ระบบสำเร็จ!");
     console.log("Login Success:", data);
 
-    // สามารถเก็บ Token ไว้ใน localStorage ได้ถ้าต้องการ
-    // localStorage.setItem("token", data.token);
+    // ✅ ถ้ามี Token ให้เก็บไว้ (ถ้าเซิร์ฟเวอร์ส่งมา)
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+    }
+
+    // ✅ เปลี่ยนหน้าไปยัง index.vue (อาจต้องเป็น `/`)
+    router.push("/");
   } catch (error) {
     errorMessage.value = error.message;
   }
