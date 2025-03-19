@@ -50,6 +50,26 @@
             >สมัครสมาชิก</NuxtLink
           >
         </p>
+
+        <div class="flex items-center justify-center gap-6">
+          <button @click.prevent="loginWithGoogle">
+            <img
+              src="/images/google.jpg"
+              alt="Google Login"
+              class="w-10 h-10 rounded-lg"
+            />
+          </button>
+
+          <span class="text-gray-500">หรือ</span>
+
+          <button @click.prevent="loginWithLine">
+            <img
+              src="/images/line.jpg"
+              alt="Line Login"
+              class="w-10 h-10 rounded-lg"
+            />
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -65,7 +85,6 @@ const form = ref({
   password: "",
 });
 const errorMessage = ref("");
-const showPassword = ref(false);
 
 const handleSubmit = async () => {
   errorMessage.value = "";
@@ -86,15 +105,25 @@ const handleSubmit = async () => {
     alert("🎉 เข้าสู่ระบบสำเร็จ!");
     console.log("Login Success:", data);
 
-    // ✅ ถ้ามี Token ให้เก็บไว้ (ถ้าเซิร์ฟเวอร์ส่งมา)
     if (data.token) {
       localStorage.setItem("token", data.token);
     }
 
-    // ✅ เปลี่ยนหน้าไปยัง index.vue (อาจต้องเป็น `/`)
     router.push("/");
   } catch (error) {
     errorMessage.value = error.message;
   }
 };
+
+// ฟังก์ชันเข้าสู่ระบบด้วย Google
+const loginWithGoogle = () => {
+  window.location.href = "http://localhost:5000/logingoogle/google";
+};
+
+// ฟังก์ชันเข้าสู่ระบบด้วย Line
+const loginWithLine = () => {
+  window.location.href = "http://localhost:5000/line";
+};
 </script>
+
+<style scoped></style>
