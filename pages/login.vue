@@ -35,9 +35,11 @@
         </div>
         <button
           type="submit"
+          :disabled="isLoading"
           class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
-          เข้าสู่ระบบ
+          <span v-if="isLoading">กำลังดำเนินการ...</span>
+          <span v-else>เข้าสู่ระบบ</span>
         </button>
 
         <p v-if="errorMessage" class="text-red-500 text-sm text-center mt-2">
@@ -85,9 +87,11 @@ const form = ref({
   password: "",
 });
 const errorMessage = ref("");
+const isLoading = ref(false);
 
 const handleSubmit = async () => {
   errorMessage.value = "";
+  isLoading.value = true;
 
   try {
     const response = await fetch("http://localhost:5000/login", {
@@ -99,7 +103,11 @@ const handleSubmit = async () => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "เกิดข้อผิดพลาด");
+      if (response.status === 401) {
+        throw new Error("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
+      } else {
+        throw new Error(data.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+      }
     }
 
     alert("🎉 เข้าสู่ระบบสำเร็จ!");
@@ -112,6 +120,8 @@ const handleSubmit = async () => {
     router.push("/");
   } catch (error) {
     errorMessage.value = error.message;
+  } finally {
+    isLoading.value = false;
   }
 };
 
