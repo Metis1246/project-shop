@@ -132,7 +132,7 @@ const loginWithGoogle = () => {
 
 // ฟังก์ชันเข้าสู่ระบบด้วย Line
 const loginWithLine = () => {
-  window.location.href = "http://localhost:5000/line";
+  window.location.href = "http://localhost:5000/loginline/line";
 };
 </script>
 
