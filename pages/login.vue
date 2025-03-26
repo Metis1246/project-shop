@@ -88,7 +88,6 @@ const form = ref({
 });
 const errorMessage = ref("");
 const isLoading = ref(false);
-
 const handleSubmit = async () => {
   errorMessage.value = "";
   isLoading.value = true;
@@ -96,30 +95,34 @@ const handleSubmit = async () => {
   try {
     const response = await fetch("http://localhost:5000/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify(form.value),
     });
 
     const data = await response.json();
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error("อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-      } else {
-        throw new Error(data.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
-      }
+    console.log("Response data:", data); // สำหรับ debug
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
     }
 
+    // เก็บ token และข้อมูลผู้ใช้
+    localStorage.setItem("token", data.token);
+    if (data.user) {
+      localStorage.setItem("user", JSON.stringify(data.user));
+    }
+
+    // แจ้งเตือนและ redirect
     alert("🎉 เข้าสู่ระบบสำเร็จ!");
-    console.log("Login Success:", data);
-
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-    }
-
     router.push("/");
   } catch (error) {
+    console.error("Login error:", error);
     errorMessage.value = error.message;
+    alert(`❌ ${error.message}`);
   } finally {
     isLoading.value = false;
   }

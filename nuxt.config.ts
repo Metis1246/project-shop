@@ -15,5 +15,28 @@ export default defineNuxtConfig({
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Kanit&family=Prompt&display=swap' }
       ]
     }
-  }
+  },
+  // ✅ CORS และอนุญาต Cookie สำหรับ API
+  nitro: {
+    routeRules: {
+      "/api/**": {
+        headers: {
+          "Access-Control-Allow-Origin": "http://localhost:5000", // ✅ URL ของ Backend
+          "Access-Control-Allow-Credentials": "true", // ✅ อนุญาตส่ง Cookie
+        },
+      },
+    },
+  },
+
+  // ✅ กำหนดค่า Backend URL
+  runtimeConfig: {
+    public: {
+      apiBase: "http://localhost:5000", // ✅ Backend URL
+    },
+    defaults: {
+      fetchOptions: {
+        credentials: "include", // ✅ เปิดให้ fetch ส่ง cookie ได้
+      },
+    },
+  },
 });
