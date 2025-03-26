@@ -85,6 +85,8 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const router = useRouter();
 const form = ref({
@@ -98,29 +100,57 @@ const loading = ref(false);
 
 const handleSubmit = async () => {
   errorMessage.value = "";
-  loading.value = true; // ✅ ป้องกันการกดซ้ำ
+  loading.value = true;
 
   try {
-    const response = await fetch("http://localhost:5000/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const { data } = await axios.post(
+      "http://localhost:5000/register",
+      form.value
+    );
+
+    await Swal.fire({
+      title: "สำเร็จ!",
+      text: data.message || "สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ",
+      icon: "success",
+      confirmButtonText: "ตกลง",
+      buttonsStyling: false,
+      customClass: {
+        confirmButton:
+          "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
       },
-      body: JSON.stringify(form.value),
     });
 
-    const data = await response.json();
-    if (response.ok) {
-      alert("✅ " + data.message);
-      router.push("/login");
-    } else {
-      errorMessage.value = data.message; // แสดงข้อผิดพลาดในหน้าเว็บ
-    }
+    router.push("/login");
   } catch (error) {
-    errorMessage.value = "❌ เกิดข้อผิดพลาดในการสมัครสมาชิก";
-    console.error("เกิดข้อผิดพลาด:", error);
+    const message =
+      error.response?.data?.message || "❌ เกิดข้อผิดพลาดในการสมัครสมาชิก";
+
+    errorMessage.value = message;
+
+    await Swal.fire({
+      title: "เกิดข้อผิดพลาด!",
+      text: message,
+      icon: "error",
+      confirmButtonText: "เข้าใจแล้ว",
+      buttonsStyling: false,
+      customClass: {
+        confirmButton:
+          "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
+      },
+    });
   } finally {
-    loading.value = false; // ✅ ปิดสถานะโหลด
+    loading.value = false;
   }
 };
 </script>
+
+<style scoped>
+/* สไตล์เสริมสำหรับ SweetAlert2 */
+.swal2-confirm {
+  background-color: #7f8c9f !important;
+  color: white !important;
+}
+.swal2-confirm:hover {
+  background-color: #64a7fa !important;
+}
+</style>
