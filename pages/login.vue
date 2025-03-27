@@ -80,6 +80,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
 const router = useRouter();
 const form = ref({
@@ -116,14 +117,19 @@ const handleSubmit = async () => {
       localStorage.setItem("user", JSON.stringify(data.user));
     }
 
-    // แจ้งเตือนและ redirect
-    alert("🎉 เข้าสู่ระบบสำเร็จ!");
-    router.push("/"); // เปลี่ยนเส้นทางไปที่หน้าแรก
 
-  } catch (error) {
-    console.error("Login error:", error);
-    errorMessage.value = error.message;
-    alert(`❌ ${error.message}`);
+    await Swal.fire({
+      title: "สำเร็จ!",
+      text: "🎉 เข้าสู่ระบบสำเร็จ!",
+      icon: "success",
+      confirmButtonText: "ตกลง",
+      buttonsStyling: false,
+      customClass: {
+        confirmButton:
+          "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
+      },
+    });
+    router.push("/");
   } finally {
     isLoading.value = false;
   }
