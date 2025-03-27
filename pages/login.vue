@@ -107,7 +107,7 @@ const handleSubmit = async () => {
 
     console.log("Response data:", data); // สำหรับ debug
 
-    if (!response.ok || !data.success) {
+    if (!response.ok || !data.token) {
       throw new Error(data.message || "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
     }
 
@@ -117,7 +117,7 @@ const handleSubmit = async () => {
       localStorage.setItem("user", JSON.stringify(data.user));
     }
 
-    // แจ้งเตือนและ redirect
+
     await Swal.fire({
       title: "สำเร็จ!",
       text: "🎉 เข้าสู่ระบบสำเร็จ!",
@@ -134,6 +134,8 @@ const handleSubmit = async () => {
     isLoading.value = false;
   }
 };
+
+
 
 // ฟังก์ชันเข้าสู่ระบบด้วย Google
 const loginWithGoogle = () => {
