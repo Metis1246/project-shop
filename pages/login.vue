@@ -120,13 +120,13 @@ const handleSubmit = async () => {
     // แจ้งเตือนและ redirect
     await Swal.fire({
       title: "สำเร็จ!",
-      text: "🎉 เข้าสู่ระบบสำเร็จ!",
+      text: " เข้าสู่ระบบสำเร็จ!",
       icon: "success",
       confirmButtonText: "ตกลง",
       buttonsStyling: false,
       customClass: {
         confirmButton:
-          "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
+          "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
       },
     });
 
@@ -144,7 +144,7 @@ const handleSubmit = async () => {
       buttonsStyling: false,
       customClass: {
         confirmButton:
-          "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
+          "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
       },
     });
   } finally {
