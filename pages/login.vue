@@ -76,7 +76,6 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -89,6 +88,7 @@ const form = ref({
 });
 const errorMessage = ref("");
 const isLoading = ref(false);
+
 const handleSubmit = async () => {
   errorMessage.value = "";
   isLoading.value = true;
@@ -117,7 +117,7 @@ const handleSubmit = async () => {
       localStorage.setItem("user", JSON.stringify(data.user));
     }
 
-    // แจ้งเตือนและ redirect
+    // แจ้งเตือนและ redirect ด้วย SweetAlert2
     await Swal.fire({
       title: "สำเร็จ!",
       text: "🎉 เข้าสู่ระบบสำเร็จ!",
@@ -126,24 +126,43 @@ const handleSubmit = async () => {
       buttonsStyling: false,
       customClass: {
         confirmButton:
-          "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
+          "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
       },
     });
+
     router.push("/");
+  } catch (error) {
+    console.error("Login error:", error);
+    errorMessage.value = error.message;
+
+    // แสดงข้อผิดพลาดด้วย SweetAlert2
+    await Swal.fire({
+      title: "เกิดข้อผิดพลาด!",
+      text: `❌ ${error.message}`,
+      icon: "error",
+      confirmButtonText: "เข้าใจแล้ว",
+      buttonsStyling: false,
+      customClass: {
+        confirmButton:
+          "bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
+      },
+    });
   } finally {
     isLoading.value = false;
   }
 };
 
-// ฟังก์ชันเข้าสู่ระบบด้วย Google
+// ฟังก์ชันเข้าสู่ระบบด้วย Google (ไม่เปลี่ยนแปลง)
 const loginWithGoogle = () => {
   window.location.href = "http://localhost:5000/logingoogle/google";
 };
 
-// ฟังก์ชันเข้าสู่ระบบด้วย Line
+// ฟังก์ชันเข้าสู่ระบบด้วย Line (ไม่เปลี่ยนแปลง)
 const loginWithLine = () => {
   window.location.href = "http://localhost:5000/loginline/line";
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+/* สไตล์เดิมทั้งหมดไม่เปลี่ยนแปลง */
+</style>
