@@ -1,6 +1,11 @@
+<script lang="ts">
+definePageMeta({
+  layout: "main",
+});
+</script>
 <template>
   <div>
-    <h1>Admin Dashboard</h1>
+    <h1>Home</h1>
   </div>
 </template>
 

@@ -108,36 +108,24 @@ const handleSubmit = async () => {
       form.value
     );
 
-    await Swal.fire({
-      title: "สำเร็จ!",
-      text: data.message || "สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ",
-      icon: "success",
-      confirmButtonText: "ตกลง",
-      buttonsStyling: false,
-      customClass: {
-        confirmButton:
-          "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
-      },
-    });
-
-    router.push("/login");
+    if (data.success) {
+      await Swal.fire({
+        title: "สำเร็จ!",
+        text: data.message || "สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ",
+        icon: "success",
+        confirmButtonText: "ตกลง",
+        buttonsStyling: false,
+        customClass: {
+          confirmButton:
+            "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
+        },
+      });
+      router.push("/login");
+    } else {
+      throw new Error(data.message || "เกิดข้อผิดพลาดในการสมัครสมาชิก");
+    }
   } catch (error) {
-    const message =
-      error.response?.data?.message || "❌ เกิดข้อผิดพลาดในการสมัครสมาชิก";
-
-    errorMessage.value = message;
-
-    await Swal.fire({
-      title: "เกิดข้อผิดพลาด!",
-      text: message,
-      icon: "error",
-      confirmButtonText: "เข้าใจแล้ว",
-      buttonsStyling: false,
-      customClass: {
-        confirmButton:
-          "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
-      },
-    });
+    errorMessage.value = error.response?.data?.message || error.message;
   } finally {
     loading.value = false;
   }
