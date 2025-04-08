@@ -11,10 +11,16 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
+      title: 'Swift Shop', // หรือชื่อเว็บของคุณ
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+       
+      ],
       link: [
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Kanit&family=Prompt&display=swap' }
-      ]
-    }
+      ],
+    },
   },
   // ✅ CORS และอนุญาต Cookie สำหรับ API
   nitro: {
