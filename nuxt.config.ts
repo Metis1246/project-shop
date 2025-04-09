@@ -1,4 +1,4 @@
-export default defineNuxtConfig({
+export default defineNuxtConfig(<any>{
   compatibilityDate: '2024-11-01',
   devtools: { enabled: false },
   pages: true,
@@ -9,40 +9,36 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  modules: [
+    '@pinia/nuxt',
+  ],
+  pinia: {
+    autoImports: ['defineStore', 'storeToRefs'],
+  },
+  runtimeConfig: {
+    public: {
+      apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3000',
+    }
+  },
+  proxy: {
+    '/api': {
+      target: process.env.API_BASE_URL || 'http://localhost:3000',
+      pathRewrite: { '^/api': '/api' }
+    }
+  },
   app: {
     head: {
-      title: 'Swift Shop', // หรือชื่อเว็บของคุณ
+      title: 'Swift Shop',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-       
       ],
       link: [
-        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Kanit&family=Prompt&display=swap' }
-      ],
-    },
-  },
-  // ✅ CORS และอนุญาต Cookie สำหรับ API
-  nitro: {
-    routeRules: {
-      "/api/**": {
-        headers: {
-          "Access-Control-Allow-Origin": "http://localhost:5000", // ✅ URL ของ Backend
-          "Access-Control-Allow-Credentials": "true", // ✅ อนุญาตส่ง Cookie
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Kanit&family=Prompt&display=swap',
         },
-      },
-    },
-  },
-
-  // ✅ กำหนดค่า Backend URL
-  runtimeConfig: {
-    public: {
-      apiBase: "http://localhost:5000", // ✅ Backend URL
-    },
-    defaults: {
-      fetchOptions: {
-        credentials: "include", // ✅ เปิดให้ fetch ส่ง cookie ได้
-      },
+      ],
     },
   },
 });

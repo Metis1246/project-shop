@@ -77,12 +77,15 @@
   </div>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
+import { useAuthStore } from "~/composables/useAuth";
 
 const router = useRouter();
-const form = ref({
+const authStore = useAuthStore();
+
+const form = reactive({
   email: "",
   password: "",
 });
@@ -94,33 +97,33 @@ const handleSubmit = async () => {
   isLoading.value = true;
 
   try {
-    const response = await fetch("http://localhost:5000/login", {
+    // เรียก API โดยตรง
+    const response = await fetch("http://localhost:5000/api/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json",
       },
-      body: JSON.stringify(form.value),
+      body: JSON.stringify({ email: form.email, password: form.password }),
+      credentials: "include", // สำคัญสำหรับ cookie
     });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+    }
 
     const data = await response.json();
 
-    console.log("Response data:", data); // สำหรับ debug
+    // อัพเดท authStore
+    authStore.$patch({
+      user: data.user,
+      token: data.token,
+    });
 
-    if (!response.ok || !data.token) {
-      throw new Error(data.message || "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
-    }
-
-    // เก็บ token และข้อมูลผู้ใช้
-    localStorage.setItem("token", data.token);
-    if (data.user) {
-      localStorage.setItem("user", JSON.stringify(data.user));
-    }
-
-    // แจ้งเตือนและ redirect
+    // แจ้งเตือนความสำเร็จ
     await Swal.fire({
       title: "สำเร็จ!",
-      text: " เข้าสู่ระบบสำเร็จ!",
+      text: "เข้าสู่ระบบสำเร็จ!",
       icon: "success",
       confirmButtonText: "ตกลง",
       buttonsStyling: false,
@@ -130,12 +133,11 @@ const handleSubmit = async () => {
       },
     });
 
-    router.push("/");
+    router.push("/"); // ไปหน้าหลัก
   } catch (error) {
     console.error("Login error:", error);
     errorMessage.value = error.message;
 
-    // แสดงข้อผิดพลาดด้วย SweetAlert2
     await Swal.fire({
       title: "เกิดข้อผิดพลาด!",
       text: `❌ ${error.message}`,
@@ -152,17 +154,13 @@ const handleSubmit = async () => {
   }
 };
 
-// ฟังก์ชันเข้าสู่ระบบด้วย Google (ไม่เปลี่ยนแปลง)
+// ฟังก์ชันเข้าสู่ระบบด้วย Google
 const loginWithGoogle = () => {
   window.location.href = "http://localhost:5000/logingoogle/google";
 };
 
-// ฟังก์ชันเข้าสู่ระบบด้วย Line (ไม่เปลี่ยนแปลง)
+// ฟังก์ชันเข้าสู่ระบบด้วย Line
 const loginWithLine = () => {
   window.location.href = "http://localhost:5000/loginline/line";
 };
 </script>
-
-<style scoped>
-/* สไตล์เดิมทั้งหมดไม่เปลี่ยนแปลง */
-</style>

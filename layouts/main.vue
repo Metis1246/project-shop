@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- Header สำหรับผู้ใช้ที่ล็อกอินแล้ว -->
+    <!-- Header -->
     <header>
       <div class="header-container">
         <!-- ชื่อเว็บ -->
@@ -15,16 +15,9 @@
           <NuxtLink to="/wallet">เติมเงิน</NuxtLink>
         </div>
 
-        <!-- ส่วนโปรไฟล์ผู้ใช้ -->
-        <div class="user-profile">
-          <span class="username">{{ user.name }}</span>
-          <div class="avatar">
-            <!-- ไอคอนหรือรูปโปรไฟล์ -->
-            <img v-if="user.avatar" :src="user.avatar" alt="Profile" />
-            <div v-else class="avatar-initials">
-              {{ getInitials(user.name) }}
-            </div>
-          </div>
+        <!-- ปุ่ม -->
+        <div class="buttons">
+          <NuxtLink to="/login" class="btn-primary">ออกจากระบบ</NuxtLink>
         </div>
       </div>
     </header>
@@ -32,25 +25,8 @@
   </div>
 </template>
 
-<script setup>
-// ข้อมูลผู้ใช้ (ควรดึงจาก store หรือ API)
-const user = ref({
-  name: "Metis N.", // เปลี่ยนเป็นชื่อผู้ใช้จริง
-  avatar: null,
-});
-
-// ฟังก์ชันสร้างตัวอักษรแรกของชื่อ
-const getInitials = (name) => {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
-};
-</script>
-
 <style scoped>
-/* สไตล์เดิมจาก default layout */
+/* กำหนด Header */
 header {
   width: 100%;
   max-width: 1200px;
@@ -93,38 +69,36 @@ header {
   color: #64a7fa;
 }
 
-/* สไตล์ส่วนโปรไฟล์ผู้ใช้ */
-.user-profile {
+.buttons {
   display: flex;
-  align-items: center;
   gap: 10px;
 }
 
-.username {
+.buttons a {
+  text-decoration: none;
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 10px;
   font-weight: bold;
-  color: #333;
+  font-size: 15px;
+  cursor: pointer;
 }
 
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+.buttons a.btn-primary {
   background-color: #64a7fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   color: white;
-  font-weight: bold;
-  overflow: hidden;
 }
 
-.avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.buttons a.btn-primary:hover {
+  background-color: #64a7fa;
 }
 
-.avatar-initials {
-  font-size: 16px;
+.buttons a.btn-secondary {
+  background-color: #c4c4c4;
+  color: white;
+}
+
+.buttons a.btn-secondary:hover {
+  background-color: #cbd5e1;
 }
 </style>
