@@ -17,13 +17,60 @@
 
         <!-- ปุ่ม -->
         <div class="buttons">
-          <NuxtLink to="/login" class="btn-primary">ออกจากระบบ</NuxtLink>
+          <button @click="handleLogout" class="btn-primary">ออกจากระบบ</button>
         </div>
       </div>
     </header>
-    <NuxtPage />
+    <slot />
   </div>
 </template>
+
+<script setup>
+import { useAuthStore } from "~/composables/useAuth";
+import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+const handleLogout = async () => {
+  try {
+    const result = await authStore.logout();
+
+    if (result.success) {
+      await Swal.fire({
+        title: "สำเร็จ!",
+        text: "ออกจากระบบสำเร็จ!",
+        icon: "success",
+        confirmButtonText: "ตกลง",
+        buttonsStyling: false,
+        customClass: {
+          confirmButton:
+            "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
+        },
+      });
+
+      router.push("/login");
+    } else {
+      throw new Error(result.message || "เกิดข้อผิดพลาดในการออกจากระบบ");
+    }
+  } catch (error) {
+    console.error("Logout error:", error);
+
+    await Swal.fire({
+      title: "เกิดข้อผิดพลาด!",
+      text: `❌ ${error.message}`,
+      icon: "error",
+      confirmButtonText: "เข้าใจแล้ว",
+      buttonsStyling: false,
+      customClass: {
+        confirmButton:
+          "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
+      },
+    });
+  }
+};
+</script>
 
 <style scoped>
 /* กำหนด Header */
@@ -74,6 +121,7 @@ header {
   gap: 10px;
 }
 
+.buttons button,
 .buttons a {
   text-decoration: none;
   display: inline-block;
@@ -82,15 +130,18 @@ header {
   font-weight: bold;
   font-size: 15px;
   cursor: pointer;
+  border: none;
 }
 
+.buttons button.btn-primary,
 .buttons a.btn-primary {
   background-color: #64a7fa;
   color: white;
 }
 
+.buttons button.btn-primary:hover,
 .buttons a.btn-primary:hover {
-  background-color: #64a7fa;
+  background-color: #4a8fdb;
 }
 
 .buttons a.btn-secondary {

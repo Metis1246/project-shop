@@ -159,9 +159,6 @@
 </template>
 
 <script setup>
-definePageMeta({
-  layout: "main", // หรือ 'default' ตามที่คุณต้องการ
-});
 import { ref, onMounted, onUnmounted } from "vue";
 
 const texts = ["สตรีมมิ่ง", "เกมส์"];

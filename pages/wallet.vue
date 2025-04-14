@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h1>เงิน</h1>
+  <div class="flex items-center justify-center h-screen">
+    <h1 class="text-4xl font-bold">เติมเงิน</h1>
   </div>
 </template>
 

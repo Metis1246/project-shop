@@ -12,6 +12,9 @@ export default defineNuxtConfig(<any>{
   modules: [
     '@pinia/nuxt',
   ],
+  router: {
+    middleware: ['layout']
+  },
   pinia: {
     autoImports: ['defineStore', 'storeToRefs'],
   },
