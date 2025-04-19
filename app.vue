@@ -1,22 +1,16 @@
 <template>
-  <NuxtLayout :name="layoutName">
+  <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
 </template>
 
 <script setup>
-import { computed, onMounted, watch } from "vue";
 import { useAuthStore } from "~/composables/useAuth";
 
+// โหลดข้อมูลผู้ใช้เมื่อแอปพลิเคชันเริ่มต้น
 const authStore = useAuthStore();
-
-// ใช้ computed property เพื่อกำหนด layout ตามสถานะการ login
-const layoutName = computed(() => {
-  return authStore.isAuthenticated ? "main" : "default";
-});
-
-// เมื่อโหลดหน้าเว็บครั้งแรก ตรวจสอบสถานะ login
+// ดึงข้อมูลผู้ใช้เมื่อแอปเริ่มทำงาน
 onMounted(async () => {
-  await authStore.fetchUser();
+  await authStore.initialize();
 });
 </script>

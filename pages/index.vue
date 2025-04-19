@@ -160,12 +160,19 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
+import { useAuthStore } from "~/composables/useAuth";
 
 const texts = ["สตรีมมิ่ง", "เกมส์"];
 const colors = ["#a412d9", "#DB242D"];
 const animatedText = ref(texts[0]);
 const textColor = ref(colors[0]);
 const promotionsSection = ref(null);
+const bottomImage = ref(null);
+const bottomText = ref(null);
+
+const authStore = useAuthStore();
+let index = 0;
+let interval = null;
 
 const scrollToPromotions = () => {
   if (promotionsSection.value) {
@@ -173,21 +180,20 @@ const scrollToPromotions = () => {
   }
 };
 
-let index = 0;
-let interval = null;
+onMounted(async () => {
+  // ตรวจสอบสถานะการ login ผ่าน Google/Line
+  await authStore.checkAuthSuccess();
 
-const bottomImage = ref(null);
-const bottomText = ref(null);
-
-onMounted(() => {
+  // เริ่มเปลี่ยนข้อความและสีแบบวนลูป
   interval = setInterval(() => {
     index = (index + 1) % texts.length;
     animatedText.value = texts[index];
     textColor.value = colors[index];
   }, 7000);
 
+  // สร้าง IntersectionObserver
   const observer = new IntersectionObserver(
-    (entries, observer) => {
+    (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("active");

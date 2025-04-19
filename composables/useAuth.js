@@ -4,6 +4,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
     token: null,
+    initialized: false
   }),
   
   getters: {
@@ -12,6 +13,23 @@ export const useAuthStore = defineStore('auth', {
   },
   
   actions: {
+    // เพิ่มฟังก์ชันใหม่สำหรับตรวจสอบการ login สำเร็จ
+    async checkAuthSuccess() {
+      const route = useRoute();
+      
+      // ตรวจสอบพารามิเตอร์ auth=success จาก redirect
+      if (route.query.auth === 'success') {
+        // ลบพารามิเตอร์ออกจาก URL เพื่อความสะอาด
+        const router = useRouter();
+        router.replace({ query: {} });
+        
+        // ดึงข้อมูลผู้ใช้
+        await this.fetchUser();
+        return true;
+      }
+      return false;
+    },
+    
     async login(email, password) {
       try {
         const response = await fetch('http://localhost:5000/api/login', {
@@ -29,7 +47,7 @@ export const useAuthStore = defineStore('auth', {
           throw new Error(data.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
         }
         
-        // เก็บข้อมูลใน state (เฉพาะในเซสชั่นปัจจุบัน)
+        // เก็บข้อมูลใน state
         this.token = data.token;
         this.user = data.user;
         
@@ -64,32 +82,37 @@ export const useAuthStore = defineStore('auth', {
     async fetchUser() {
       try {
         const response = await fetch('http://localhost:5000/api/me', {
-          credentials: 'include' // ส่ง cookie ไปด้วย
+          credentials: 'include' // ส่งคุกกี้ไปด้วย
         });
         
         if (!response.ok) {
-          throw new Error('ไม่สามารถดึงข้อมูลผู้ใช้ได้');
+          // ถ้าการตอบกลับไม่ OK ให้ล้างสถานะ auth
+          this.user = null;
+          this.token = null;
+          return { success: false, message: 'ไม่สามารถเรียกข้อมูลผู้ใช้ได้' };
         }
         
         const data = await response.json();
         this.user = data.user;
         
-        // ถ้าไม่มี token ใน state แต่ API สามารถดึงข้อมูลผู้ใช้ได้ (เพราะมี httpOnly cookie)
-        // ให้ตั้งค่า token เป็น true เพื่อบอกว่ามีการ authenticate แล้ว
-        if (!this.token) {
-          this.token = true;
-        }
+        // ตั้งค่า token เพื่อระบุว่ามีการยืนยันตัวตนแล้ว
+        this.token = true;
         
-        return { success: true };
+        return { success: true, user: data.user };
       } catch (error) {
+        console.error('เกิดข้อผิดพลาดในการเรียกข้อมูลผู้ใช้:', error);
         this.user = null;
         this.token = null;
-        
-        return {
-          success: false,
-          message: error.message
-        };
+        return { success: false, message: error.message };
       }
+    },
+    
+    async initialize() {
+      if (this.initialized) return;
+      
+      await this.fetchUser();
+      await this.checkAuthSuccess(); // ตรวจสอบการ login ผ่าน Google/Line
+      this.initialized = true;
     }
   }
 });
