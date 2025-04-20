@@ -5,18 +5,27 @@
 </template>
 
 <script setup>
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useAuthStore } from "~/composables/useAuth";
 
 const authStore = useAuthStore();
+const isLoading = ref(true);
 
-// ใช้ computed property เพื่อกำหนด layout ตามสถานะการ login
 const layoutName = computed(() => {
   return authStore.isAuthenticated ? "main" : "default";
 });
 
-// เมื่อโหลดหน้าเว็บครั้งแรก ตรวจสอบสถานะ login
 onMounted(async () => {
-  await authStore.fetchUser();
+  // เริ่มต้นด้วยการโหลดข้อมูลจาก localStorage
+  authStore.initializeAuth();
+
+  // จากนั้นพยายามดึงข้อมูลล่าสุดจาก API
+  try {
+    await authStore.fetchUser();
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  } finally {
+    isLoading.value = false;
+  }
 });
 </script>

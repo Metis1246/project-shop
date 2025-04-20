@@ -1,21 +1,27 @@
-import { useAuthStore } from '~/composables/useAuth';
+import { useAuthStore } from "~/composables/useAuth";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  // ถ้าเข้าหน้า login หรือ register ไม่ต้องตรวจสอบ authentication
-  if (to.path === '/login' || to.path === '/register') {
+  // หน้าที่ไม่จำเป็นต้องตรวจสอบการเข้าสู่ระบบ
+  const publicPages = ["/login", "/register"];
+  const isPublicPage = publicPages.includes(to.path);
+
+  const authStore = useAuthStore();
+
+  // ถ้าไปหน้าสาธารณะ ไม่จำเป็นต้องตรวจสอบ
+  if (isPublicPage) {
     return;
   }
-  
-  const authStore = useAuthStore();
-  
-  // ตรวจสอบว่ามีข้อมูลผู้ใช้แล้วหรือไม่
-  if (!authStore.isAuthenticated) {
-    // ถ้ายังไม่มี ลองดึงข้อมูลผู้ใช้
+
+  try {
+    // พยายามดึงข้อมูลผู้ใช้ทุกครั้งที่เปลี่ยนหน้า
     const result = await authStore.fetchUser();
-    
-    // ถ้าดึงข้อมูลไม่สำเร็จ (ไม่มี token ใน cookie) ให้นำทางไปหน้า login
+
+    // ถ้าไม่มีการ authenticate จะได้ success: false
     if (!result.success) {
-      return navigateTo('/login');
+      return navigateTo("/login");
     }
+  } catch (error) {
+    console.error("Authentication error:", error);
+    return navigateTo("/login");
   }
 });

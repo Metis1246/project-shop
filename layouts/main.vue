@@ -5,7 +5,9 @@
       <div class="header-container">
         <!-- ชื่อเว็บ -->
         <div class="logo">
-          <h1>Swift Shop</h1>
+          <NuxtLink to="/">
+            <h1>Swift Shop</h1>
+          </NuxtLink>
         </div>
 
         <!-- เมนู -->
