@@ -83,7 +83,8 @@ export const useAuthStore = defineStore("auth", {
         const response = await fetch(
           "https://backend-7u6l.onrender.com/api/me",
           {
-            credentials: "include", // สำคัญมาก! ส่ง cookie ไปด้วย
+            method: "GET",
+            credentials: "include", // สำคัญมาก
           }
         );
 
