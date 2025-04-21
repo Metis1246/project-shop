@@ -164,6 +164,6 @@ const loginWithGoogle = () => {
 
 // ฟังก์ชันเข้าสู่ระบบด้วย Line
 const loginWithLine = () => {
-  window.location.href = "https://backend-7u6l.onrender.com/loginline/line";
+  window.location.href = "https://backend-7u6l.onrender.com/api/auth/line/line";
 };
 </script>
