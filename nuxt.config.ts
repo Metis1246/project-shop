@@ -20,12 +20,12 @@ export default defineNuxtConfig(<any>{
   },
   runtimeConfig: {
     public: {
-      apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:3000',
+      apiBaseUrl: process.env.API_BASE_URL || 'https://project-shop-ivory.vercel.app',
     }
   },
   proxy: {
     '/api': {
-      target: process.env.API_BASE_URL || 'http://localhost:3000',
+      target: process.env.API_BASE_URL || 'https://project-shop-ivory.vercel.app',
       pathRewrite: { '^/api': '/api' }
     }
   },
