@@ -79,14 +79,13 @@ export const useAuthStore = defineStore("auth", {
           if (!this.token) this.token = true;
         }
 
-        // ดึงข้อมูลผู้ใช้จาก API (ซึ่งจะใช้ cookie ที่เก็บ token)
-        const response = await fetch(
-          "https://backend-7u6l.onrender.com/api/me",
-          {
-            method: "GET",
-            credentials: "include", // สำคัญมาก
-          }
-        );
+        const token = localStorage.getItem("token");
+
+        fetch("https://backend-7u6l.onrender.com/api/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (!response.ok) {
           // ถ้าไม่สามารถดึงข้อมูลได้ แสดงว่า token ไม่ถูกต้องหรือหมดอายุ
