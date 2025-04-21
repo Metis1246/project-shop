@@ -104,7 +104,7 @@ const handleSubmit = async () => {
 
   try {
     const { data } = await axios.post(
-      "http://localhost:5000/register",
+      "https://backend-7u6l.onrender.com/register",
       form.value
     );
 

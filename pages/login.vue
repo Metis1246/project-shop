@@ -98,14 +98,17 @@ const handleSubmit = async () => {
 
   try {
     // เรียก API โดยตรง
-    const response = await fetch("http://localhost:5000/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: form.email, password: form.password }),
-      credentials: "include", // สำคัญสำหรับ cookie
-    });
+    const response = await fetch(
+      "https://backend-7u6l.onrender.com/api/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: form.email, password: form.password }),
+        credentials: "include", // สำคัญสำหรับ cookie
+      }
+    );
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -156,11 +159,11 @@ const handleSubmit = async () => {
 
 // ฟังก์ชันเข้าสู่ระบบด้วย Google
 const loginWithGoogle = () => {
-  window.location.href = "http://localhost:5000/logingoogle/google";
+  window.location.href = "https://backend-7u6l.onrender.com/logingoogle/google";
 };
 
 // ฟังก์ชันเข้าสู่ระบบด้วย Line
 const loginWithLine = () => {
-  window.location.href = "http://localhost:5000/loginline/line";
+  window.location.href = "https://backend-7u6l.onrender.com/loginline/line";
 };
 </script>

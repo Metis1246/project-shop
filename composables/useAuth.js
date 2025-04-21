@@ -14,14 +14,17 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     async login(email, password) {
       try {
-        const response = await fetch("http://localhost:5000/api/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-          credentials: "include", // สำคัญสำหรับการรับ cookie
-        });
+        const response = await fetch(
+          "https://backend-7u6l.onrender.com/api/login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+            credentials: "include", // สำคัญสำหรับการรับ cookie
+          }
+        );
 
         const data = await response.json();
 
@@ -47,7 +50,7 @@ export const useAuthStore = defineStore("auth", {
 
     async logout() {
       try {
-        await fetch("http://localhost:5000/api/logout", {
+        await fetch("https://backend-7u6l.onrender.com/api/logout", {
           method: "POST",
           credentials: "include", // ส่ง cookie ไปด้วย
         });
@@ -77,9 +80,12 @@ export const useAuthStore = defineStore("auth", {
         }
 
         // ดึงข้อมูลผู้ใช้จาก API (ซึ่งจะใช้ cookie ที่เก็บ token)
-        const response = await fetch("http://localhost:5000/api/me", {
-          credentials: "include", // สำคัญมาก! ส่ง cookie ไปด้วย
-        });
+        const response = await fetch(
+          "https://backend-7u6l.onrender.com/api/me",
+          {
+            credentials: "include", // สำคัญมาก! ส่ง cookie ไปด้วย
+          }
+        );
 
         if (!response.ok) {
           // ถ้าไม่สามารถดึงข้อมูลได้ แสดงว่า token ไม่ถูกต้องหรือหมดอายุ
