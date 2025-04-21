@@ -79,13 +79,16 @@ export const useAuthStore = defineStore("auth", {
           if (!this.token) this.token = true;
         }
 
-        const token = localStorage.getItem("token");
+        // const token = localStorage.getItem("token");
 
-        fetch("https://backend-7u6l.onrender.com/api/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://backend-7u6l.onrender.com/api/me",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // ต้องมี token ที่ login แล้ว
+            },
+          }
+        );
 
         if (!response.ok) {
           // ถ้าไม่สามารถดึงข้อมูลได้ แสดงว่า token ไม่ถูกต้องหรือหมดอายุ
