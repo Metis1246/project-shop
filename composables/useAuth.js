@@ -1,139 +1,133 @@
 import { defineStore } from "pinia";
 
-export const useAuthStore = defineStore("auth", {
-  state: () => ({
-    user: null,
-    token: null,
-  }),
+export const useAuthStore = defineStore("auth", () => {
+  // State
+  const user = ref(null);
+  const token = ref(null);
+  
+  // Runtime config
+  const config = useRuntimeConfig();
+  const apiUrl = config.public.apiBaseUrl;
 
-  getters: {
-    isAuthenticated: (state) => !!state.token || !!state.user,
-    getUser: (state) => state.user,
-  },
+  // Getters
+  const isAuthenticated = computed(() => !!token.value || !!user.value);
+  const getUser = computed(() => user.value);
 
-  actions: {
-    async login(email, password) {
-      try {
-        const response = await fetch(
-          "https://backend-7u6l.onrender.com/api/login",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-            credentials: "include", // สำคัญสำหรับการรับ cookie
-          }
-        );
+  // Actions
+  const login = async (email, password) => {
+    try {
+      const response = await $fetch(`${apiUrl}/api/login`, {
+        method: "POST",
+        body: { email, password },
+        credentials: "include"
+      });
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
-        }
-
-        // เก็บข้อมูลใน state
-        this.token = data.token || true; // ถ้าไม่มี token ในข้อมูลตอบกลับ ให้เป็น true
-        this.user = data.user;
-
-        // เก็บข้อมูลใน localStorage เพื่อให้คงอยู่หลัง refresh
-        localStorage.setItem("user", JSON.stringify(data.user));
-
-        return { success: true };
-      } catch (error) {
-        return {
-          success: false,
-          message: error.message,
-        };
+      token.value = response.token || true;
+      user.value = response.user;
+      
+      if (process.client) {
+        localStorage.setItem("user", JSON.stringify(response.user));
       }
-    },
 
-    async logout() {
-      try {
-        await fetch("https://backend-7u6l.onrender.com/api/logout", {
-          method: "POST",
-          credentials: "include", // ส่ง cookie ไปด้วย
-        });
+      return { success: true, data: response };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.data?.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ"
+      };
+    }
+  };
 
-        this.user = null;
-        this.token = null;
+  const logout = async () => {
+    try {
+      await $fetch(`${apiUrl}/api/login/logout`, {
+        method: "POST",
+        credentials: "include"
+      });
 
-        // ลบข้อมูลจาก localStorage
+      user.value = null;
+      token.value = null;
+
+      if (process.client) {
         localStorage.removeItem("user");
-
-        return { success: true };
-      } catch (error) {
-        return {
-          success: false,
-          message: error.message,
-        };
       }
-    },
 
-    async fetchUser() {
-      try {
-        // ตรวจสอบว่ามีข้อมูลใน localStorage หรือไม่ (เป็นการเช็คเบื้องต้น)
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.data?.message || "เกิดข้อผิดพลาดในการออกจากระบบ"
+      };
+    }
+  };
+
+  const fetchUser = async () => {
+    try {
+      if (process.client) {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
-          this.user = JSON.parse(storedUser);
-          if (!this.token) this.token = true;
+          user.value = JSON.parse(storedUser);
+          if (!token.value) token.value = true;
         }
-
-        // const token = localStorage.getItem("token");
-
-        const response = await fetch(
-          "https://backend-7u6l.onrender.com/api/me",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // ต้องมี token ที่ login แล้ว
-            },
-          }
-        );
-
-        if (!response.ok) {
-          // ถ้าไม่สามารถดึงข้อมูลได้ แสดงว่า token ไม่ถูกต้องหรือหมดอายุ
-          throw new Error("ไม่สามารถดึงข้อมูลผู้ใช้ได้");
-        }
-
-        const data = await response.json();
-        this.user = data.user;
-
-        // เก็บข้อมูลใน localStorage อีกครั้ง (อัพเดตข้อมูลล่าสุด)
-        localStorage.setItem("user", JSON.stringify(data.user));
-
-        // ถ้าสามารถดึงข้อมูลได้ แสดงว่ามีการ authenticate แล้ว
-        if (!this.token) {
-          this.token = true;
-        }
-
-        return { success: true };
-      } catch (error) {
-        // ล้างข้อมูลทั้งหมดเมื่อเกิดข้อผิดพลาด
-        this.user = null;
-        this.token = null;
-        localStorage.removeItem("user");
-
-        return {
-          success: false,
-          message: error.message,
-        };
       }
-    },
+  
+      const response = await $fetch(`${apiUrl}/api/login/me`, {
+        credentials: "include",
+        headers: {
+          // เพิ่ม header นี้เพื่อป้องกัน caching ที่อาจทำให้ได้ 401
+          'Cache-Control': 'no-cache'
+        }
+      });
+  
+      user.value = response.user;
+      token.value = true; // ตั้งค่า token เป็น true เมื่อดึงข้อมูลผู้ใช้สำเร็จ
+  
+      if (process.client) {
+        localStorage.setItem("user", JSON.stringify(response.user));
+      }
+  
+      return { success: true, data: response };
+    } catch (error) {
+      // ล้างข้อมูลการล็อกอินเมื่อเกิดข้อผิดพลาด
+      user.value = null;
+      token.value = null;
+  
+      if (process.client) {
+        localStorage.removeItem("user");
+      }
+  
+      return {
+        success: false,
+        message: error.data?.message || "ไม่สามารถดึงข้อมูลผู้ใช้ได้"
+      };
+    }
+  };
+  
 
-    // เพิ่มฟังก์ชันสำหรับโหลดข้อมูลจาก localStorage เมื่อเริ่มแอพ
-    initializeAuth() {
+  const initializeAuth = () => {
+    if (process.client) {
       try {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
-          this.user = JSON.parse(storedUser);
-          this.token = true;
+          user.value = JSON.parse(storedUser);
+          token.value = true;
           return true;
         }
-        return false;
       } catch (error) {
         console.error("Error initializing auth from localStorage:", error);
-        return false;
       }
-    },
-  },
+    }
+    return false;
+  };
+
+  return {
+    user,
+    token,
+    isAuthenticated,
+    getUser,
+    login,
+    logout,
+    fetchUser,
+    initializeAuth
+  };
 });
