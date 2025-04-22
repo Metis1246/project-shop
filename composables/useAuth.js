@@ -71,29 +71,29 @@ export const useAuthStore = defineStore("auth", () => {
         }
       }
   
+      // ตั้งค่า credentials: "include" เพื่อส่งคุกกี้ไปกับการร้องขอ
       const response = await $fetch(`${apiUrl}/api/login/me`, {
-        credentials: "include",
+        credentials: "include",  // ส่งคุกกี้
         headers: {
-          // เพิ่ม header นี้เพื่อป้องกัน caching ที่อาจทำให้ได้ 401
-          'Cache-Control': 'no-cache'
+          'Cache-Control': 'no-cache' // ป้องกันการแคช
         }
       });
   
       user.value = response.user;
-      token.value = true; // ตั้งค่า token เป็น true เมื่อดึงข้อมูลผู้ใช้สำเร็จ
+      token.value = true;  // ตั้งค่า token เป็น true เมื่อดึงข้อมูลผู้ใช้สำเร็จ
   
       if (process.client) {
-        localStorage.setItem("user", JSON.stringify(response.user));
+        localStorage.setItem("user", JSON.stringify(response.user));  // เก็บข้อมูลผู้ใช้ใน localStorage
       }
   
       return { success: true, data: response };
+  
     } catch (error) {
-      // ล้างข้อมูลการล็อกอินเมื่อเกิดข้อผิดพลาด
       user.value = null;
       token.value = null;
   
       if (process.client) {
-        localStorage.removeItem("user");
+        localStorage.removeItem("user");  // ลบข้อมูลผู้ใช้ในกรณีเกิดข้อผิดพลาด
       }
   
       return {
@@ -102,6 +102,7 @@ export const useAuthStore = defineStore("auth", () => {
       };
     }
   };
+  
   
 
   const initializeAuth = () => {
