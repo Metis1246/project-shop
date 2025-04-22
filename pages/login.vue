@@ -136,11 +136,13 @@ const handleSubmit = async () => {
   }
 };
 
+const runtimeConfig = useRuntimeConfig();  // ใช้เพื่อเข้าถึง runtimeConfig
+
 const loginWithGoogle = () => {
-  window.location.href = `${config.public.apiBaseUrl}/api/auth/google/google`;
+  window.location.href = `${runtimeConfig.public.apiBaseUrl}/api/auth/google/google`;
 };
 
 const loginWithLine = () => {
-  window.location.href = `${config.public.apiBaseUrl}/api/auth/line`;
+  window.location.href = `${runtimeConfig.public.apiBaseUrl}/api/auth/line/line`;
 };
 </script>
