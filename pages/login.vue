@@ -8,9 +8,9 @@
       </h1>
       <form @submit.prevent="handleSubmit" class="space-y-6">
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-700"
-            >อีเมล</label
-          >
+          <label for="email" class="block text-sm font-medium text-gray-700">
+            อีเมล
+          </label>
           <input
             type="email"
             id="email"
@@ -21,9 +21,12 @@
           />
         </div>
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700"
-            >รหัสผ่าน</label
+          <label
+            for="password"
+            class="block text-sm font-medium text-gray-700"
           >
+            รหัสผ่าน
+          </label>
           <input
             type="password"
             id="password"
@@ -48,9 +51,9 @@
 
         <p class="text-sm text-gray-600 text-center">
           หากยังไม่มีบัญชีคลิกที่นี่เพื่อ
-          <NuxtLink to="/register" class="text-blue-600 hover:text-blue-500"
-            >สมัครสมาชิก</NuxtLink
-          >
+          <NuxtLink to="/register" class="text-blue-600 hover:text-blue-500">
+            สมัครสมาชิก
+          </NuxtLink>
         </p>
 
         <div class="flex items-center justify-center gap-6">
@@ -76,15 +79,16 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
-import { useAuthStore } from "~/composables/useAuth";
+import { useAuthStore } from "~/composables/useAuth"; // แนะนำให้ใช้โครงสร้างนี้แทน
 
-const router = useRouter();
 const authStore = useAuthStore();
-
+const config = useRuntimeConfig();
+const apiBaseUrl = config.public.NUXT_PUBLIC_API;
 const form = reactive({
   email: "",
   password: "",
@@ -97,73 +101,49 @@ const handleSubmit = async () => {
   isLoading.value = true;
 
   try {
-    // เรียก API โดยตรง
-    const response = await fetch(
-      "https://backend-7u6l.onrender.com/api/login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    const result = await authStore.login(form.email, form.password);
+
+    if (result.success) {
+      await Swal.fire({
+        title: "สำเร็จ!",
+        text: "เข้าสู่ระบบสำเร็จ!",
+        icon: "success",
+        confirmButtonText: "ตกลง",
+        buttonsStyling: false,
+        customClass: {
+          confirmButton:
+            "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
         },
-        body: JSON.stringify({ email: form.email, password: form.password }),
-        credentials: "include", // สำคัญสำหรับ cookie
-      }
-    );
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+      await navigateTo('/');
+    } else {
+      errorMessage.value = result.message;
+      await Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: `❌ ${result.message}`,
+        icon: "error",
+        confirmButtonText: "เข้าใจแล้ว",
+        buttonsStyling: false,
+        customClass: {
+          confirmButton:
+            "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
+        },
+      });
     }
-
-    const data = await response.json();
-
-    // อัพเดท authStore
-    authStore.$patch({
-      user: data.user,
-      token: data.token,
-    });
-
-    // แจ้งเตือนความสำเร็จ
-    await Swal.fire({
-      title: "สำเร็จ!",
-      text: "เข้าสู่ระบบสำเร็จ!",
-      icon: "success",
-      confirmButtonText: "ตกลง",
-      buttonsStyling: false,
-      customClass: {
-        confirmButton:
-          "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
-      },
-    });
-
-    router.push("/"); // ไปหน้าหลัก
   } catch (error) {
+    errorMessage.value = "เกิดข้อผิดพลาดในการเชื่อมต่อ";
     console.error("Login error:", error);
-    errorMessage.value = error.message;
-
-    await Swal.fire({
-      title: "เกิดข้อผิดพลาด!",
-      text: `❌ ${error.message}`,
-      icon: "error",
-      confirmButtonText: "เข้าใจแล้ว",
-      buttonsStyling: false,
-      customClass: {
-        confirmButton:
-          "bg-[#7f8c9f] hover:bg-[#64a7fa] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200",
-      },
-    });
   } finally {
     isLoading.value = false;
   }
 };
 
-// ฟังก์ชันเข้าสู่ระบบด้วย Google
 const loginWithGoogle = () => {
-  window.location.href = "https://backend-7u6l.onrender.com/logingoogle/google";
+  window.location.href = `${config.public.apiBaseUrl}/api/auth/google/google`;
 };
 
-// ฟังก์ชันเข้าสู่ระบบด้วย Line
 const loginWithLine = () => {
-  window.location.href = "https://backend-7u6l.onrender.com/api/auth/line";
+  window.location.href = `${config.public.apiBaseUrl}/api/auth/line`;
 };
 </script>

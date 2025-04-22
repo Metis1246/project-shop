@@ -98,13 +98,16 @@ const form = ref({
 const errorMessage = ref("");
 const loading = ref(false);
 
+const config = useRuntimeConfig();
+const apiBaseUrl = config.public.apiBaseUrl
+console.log("api", apiBaseUrl);
 const handleSubmit = async () => {
   errorMessage.value = "";
   loading.value = true;
 
   try {
     const { data } = await axios.post(
-      "https://backend-7u6l.onrender.com/register",
+      `${apiBaseUrl}/register`,
       form.value
     );
 

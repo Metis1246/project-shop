@@ -1,4 +1,4 @@
-export default defineNuxtConfig(<any>{
+export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: false },
   pages: true,
@@ -12,21 +12,22 @@ export default defineNuxtConfig(<any>{
   modules: [
     '@pinia/nuxt',
   ],
-  router: {
-    middleware: ['auth']
+  imports: {
+    dirs: ['stores']
   },
   pinia: {
-    autoImports: ['defineStore', 'storeToRefs'],
+    storesDirs: ['./stores/**']
   },
   runtimeConfig: {
     public: {
-      apiBaseUrl: process.env.API_BASE_URL || 'https://project-shop-ivory.vercel.app',
+      apiBaseUrl: process.env.NUXT_PUBLIC_API || 'https://backend-7u6l.onrender.com',
     }
   },
-  proxy: {
-    '/api': {
-      target: process.env.API_BASE_URL || 'https://project-shop-ivory.vercel.app',
-      pathRewrite: { '^/api': '/api' }
+  nitro: {
+    routeRules: {
+      '/api/**': {
+        proxy: process.env.NUXT_PUBLIC_API || 'https://backend-7u6l.onrender.com/api/**'
+      }
     }
   },
   app: {
@@ -44,4 +45,4 @@ export default defineNuxtConfig(<any>{
       ],
     },
   },
-});
+})
