@@ -107,7 +107,7 @@ const handleSubmit = async () => {
 
   try {
     const { data } = await axios.post(
-      `${apiBaseUrl}/register`,
+      `${apiBaseUrl}/api/auth/register`,
       form.value
     );
 
