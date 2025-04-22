@@ -82,13 +82,10 @@
 
 <script setup>
 import { ref, reactive } from "vue";
-import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
-import { useAuthStore } from "~/composables/useAuth"; // แนะนำให้ใช้โครงสร้างนี้แทน
+import { useAuthStore } from "~/composables/useAuth"; // แก้ไข path ให้ถูกต้อง
 
 const authStore = useAuthStore();
-const config = useRuntimeConfig();
-const apiBaseUrl = config.public.NUXT_PUBLIC_API;
 const form = reactive({
   email: "",
   password: "",
@@ -101,9 +98,9 @@ const handleSubmit = async () => {
   isLoading.value = true;
 
   try {
-    const result = await authStore.login(form.email, form.password);
+    const { success, message } = await authStore.login(form.email, form.password);
 
-    if (result.success) {
+    if (success) {
       await Swal.fire({
         title: "สำเร็จ!",
         text: "เข้าสู่ระบบสำเร็จ!",
@@ -118,10 +115,10 @@ const handleSubmit = async () => {
 
       await navigateTo('/');
     } else {
-      errorMessage.value = result.message;
+      errorMessage.value = message;
       await Swal.fire({
         title: "เกิดข้อผิดพลาด!",
-        text: `❌ ${result.message}`,
+        text: `❌ ${message}`,
         icon: "error",
         confirmButtonText: "เข้าใจแล้ว",
         buttonsStyling: false,
