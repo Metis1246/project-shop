@@ -79,13 +79,11 @@
 
 <script setup>
 import { ref, reactive } from "vue";
-import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
 import { useAuthStore } from "~/composables/useAuth";
 
 const authStore = useAuthStore();
 const config = useRuntimeConfig();
-const apiBaseUrl = config.public.NUXT_PUBLIC_API;
 const form = reactive({
   email: "",
   password: "",

@@ -99,7 +99,7 @@ const errorMessage = ref("");
 const loading = ref(false);
 
 const config = useRuntimeConfig();
-const apiBaseUrl = config.public.apiBaseUrl
+const apiBaseUrl = config.public.apiBaseUrl;
 console.log("api", apiBaseUrl);
 const handleSubmit = async () => {
   errorMessage.value = "";
@@ -107,7 +107,7 @@ const handleSubmit = async () => {
 
   try {
     const { data } = await axios.post(
-      `${apiBaseUrl}/register`,
+      `${apiBaseUrl}/api/auth/register`,
       form.value
     );
 
