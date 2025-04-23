@@ -143,6 +143,6 @@ const loginWithGoogle = () => {
 };
 
 const loginWithLine = () => {
-  window.location.href = `${runtimeConfig.public.apiBaseUrl}/api/auth/line/line`;
+window.location.href = `${runtimeConfig.public.apiBaseUrl}/api/auth/line`;
 };
 </script>
