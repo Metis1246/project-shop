@@ -21,10 +21,7 @@
           />
         </div>
         <div>
-          <label
-            for="password"
-            class="block text-sm font-medium text-gray-700"
-          >
+          <label for="password" class="block text-sm font-medium text-gray-700">
             รหัสผ่าน
           </label>
           <input
@@ -84,7 +81,7 @@
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
-import { useAuthStore } from "~/composables/useAuth"; // แนะนำให้ใช้โครงสร้างนี้แทน
+import { useAuthStore } from "~/composables/useAuth";
 
 const authStore = useAuthStore();
 const config = useRuntimeConfig();
@@ -116,7 +113,7 @@ const handleSubmit = async () => {
         },
       });
 
-      await navigateTo('/');
+      await navigateTo("/");
     } else {
       errorMessage.value = result.message;
       await Swal.fire({
