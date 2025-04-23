@@ -80,10 +80,9 @@
 <script setup>
 import { ref, reactive } from "vue";
 import Swal from "sweetalert2";
-import { useAuthStore } from "~/composables/useAuth";
+import { useAuthStore } from "~/composables/useAuth"; // แก้ไข path ให้ถูกต้อง
 
 const authStore = useAuthStore();
-const config = useRuntimeConfig();
 const form = reactive({
   email: "",
   password: "",
@@ -96,9 +95,12 @@ const handleSubmit = async () => {
   isLoading.value = true;
 
   try {
-    const result = await authStore.login(form.email, form.password);
+    const { success, message } = await authStore.login(
+      form.email,
+      form.password
+    );
 
-    if (result.success) {
+    if (success) {
       await Swal.fire({
         title: "สำเร็จ!",
         text: "เข้าสู่ระบบสำเร็จ!",
@@ -113,10 +115,10 @@ const handleSubmit = async () => {
 
       await navigateTo("/");
     } else {
-      errorMessage.value = result.message;
+      errorMessage.value = message;
       await Swal.fire({
         title: "เกิดข้อผิดพลาด!",
-        text: `❌ ${result.message}`,
+        text: `❌ ${message}`,
         icon: "error",
         confirmButtonText: "เข้าใจแล้ว",
         buttonsStyling: false,
@@ -134,11 +136,13 @@ const handleSubmit = async () => {
   }
 };
 
+const runtimeConfig = useRuntimeConfig(); // ใช้เพื่อเข้าถึง runtimeConfig
+
 const loginWithGoogle = () => {
-  window.location.href = `${config.public.apiBaseUrl}/api/auth/google/google`;
+  window.location.href = `${runtimeConfig.public.apiBaseUrl}/api/auth/google/google`;
 };
 
 const loginWithLine = () => {
-  window.location.href = `${config.public.apiBaseUrl}/api/auth/line`;
+  window.location.href = `${runtimeConfig.public.apiBaseUrl}/api/auth/line`;
 };
 </script>

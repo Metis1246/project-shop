@@ -61,48 +61,54 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
-  const fetchUser = async () => {
-    try {
-      if (process.client) {
-        const storedUser = localStorage.getItem("user");
-        if (storedUser) {
-          user.value = JSON.parse(storedUser);
-          if (!token.value) token.value = true;
-        }
+const fetchUser = async () => {
+  try {
+    if (process.client) {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        user.value = JSON.parse(storedUser);
+        if (!token.value) token.value = JSON.parse(localStorage.getItem("token")); // ควรเก็บ token ด้วย
       }
-  
-      const response = await $fetch(`${apiUrl}/api/login/me`, {
-        credentials: "include",
-        headers: {
-          // เพิ่ม header นี้เพื่อป้องกัน caching ที่อาจทำให้ได้ 401
-          'Cache-Control': 'no-cache'
-        }
-      });
-  
-      user.value = response.user;
-      token.value = true; // ตั้งค่า token เป็น true เมื่อดึงข้อมูลผู้ใช้สำเร็จ
-  
-      if (process.client) {
-        localStorage.setItem("user", JSON.stringify(response.user));
-      }
-  
-      return { success: true, data: response };
-    } catch (error) {
-      // ล้างข้อมูลการล็อกอินเมื่อเกิดข้อผิดพลาด
-      user.value = null;
-      token.value = null;
-  
-      if (process.client) {
-        localStorage.removeItem("user");
-      }
-  
-      return {
-        success: false,
-        message: error.data?.message || "ไม่สามารถดึงข้อมูลผู้ใช้ได้"
-      };
     }
-  };
-  
+
+    // Ensure credentials are included in the request
+    const response = await $fetch(`${apiUrl}/api/login/me`, {
+      credentials: "include", // ส่งคุกกี้ไปกับ request
+      headers: {
+        'Cache-Control': 'no-cache', // ป้องกันการแคช request
+      }
+    });
+
+    if (response.token) {
+      token.value = response.token; // เก็บ token จาก response
+    }
+    
+    user.value = response.user;
+    
+    if (process.client) {
+      localStorage.setItem("user", JSON.stringify(response.user)); // เก็บข้อมูล user ลง localStorage
+      localStorage.setItem("token", JSON.stringify(response.token)); // เก็บ token ลง localStorage
+    }
+
+    return { success: true, data: response };
+
+  } catch (error) {
+    user.value = null;
+    token.value = null;
+
+    if (process.client) {
+      localStorage.removeItem("user"); // ลบข้อมูล user เมื่อเกิดข้อผิดพลาด
+      localStorage.removeItem("token"); // ลบ token เมื่อเกิดข้อผิดพลาด
+    }
+
+    return {
+      success: false,
+      message: error.data?.message || "ไม่สามารถดึงข้อมูลผู้ใช้ได้"
+    };
+  }
+};
+
+
 
   const initializeAuth = () => {
     if (process.client) {
